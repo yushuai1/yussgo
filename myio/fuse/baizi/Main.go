@@ -6,7 +6,7 @@ import (
 	"bazil.org/fuse/fs"
 	_ "bazil.org/fuse/fs/fstestutil"
 	"log"
-	"yussgo/fuse/baizi/fs_util"
+	"yussgo/myio/fuse/baizi/fs_util"
 )
 
 func main() {
