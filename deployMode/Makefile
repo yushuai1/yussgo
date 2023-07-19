@@ -17,7 +17,7 @@ GOOS ?= $(shell go env GOOS)
 # todo GOARCH=amd64表示64位x86
 GOARCH ?= $(shell go env GOARCH)
 ORG := yussgo
-PROJECT := deploytest
+PROJECT := deployMode
 REGISTRY?=vgpu
 
 REPOPATH ?= $(ORG)/$(PROJECT)
@@ -45,7 +45,7 @@ export GOFLAGS = -mod=vendor
 
 cmd/start: $(GO_FILES)
 	@ echo
-#    GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -ldflags '-extldflags "-static" -X yussgo/deploytest/pkg/version.version=v1.0.0 -w -s  ' -o cmd/start yussgo/deploytest/cmd
+#    GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -ldflags '-extldflags "-static" -X yussgo/deployMode/pkg/version.version=v1.0.0 -w -s  ' -o cmd/start yussgo/deployMode/cmd
 	GOARCH=$(GOARCH) GOOS=linux CGO_ENABLED=0 go build -ldflags $(GO_LDFLAGS) -o $@ $(EXECUTOR_PACKAGE)
 
 .PHONY: build
