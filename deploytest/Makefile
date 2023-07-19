@@ -17,7 +17,7 @@ GOOS ?= $(shell go env GOOS)
 # todo GOARCH=amd64表示64位x86
 GOARCH ?= $(shell go env GOARCH)
 ORG := yussgo
-PROJECT := deploy
+PROJECT := deploytest
 REGISTRY?=vgpu
 
 REPOPATH ?= $(ORG)/$(PROJECT)
@@ -25,6 +25,7 @@ VERSION_PACKAGE = $(REPOPATH)/pkg/version
 
 # todo -ldflags 'flag list' '-s -w': 压缩编译后的体积 -s: 去掉符号表 -w: 去掉调试信息，不能gdb调试了
 GO_FILES := $(shell find . -type f -name '*.go' -not -path "./vendor/*")
+
 GO_LDFLAGS := '-extldflags "-static"
 GO_LDFLAGS += -X $(VERSION_PACKAGE).version=$(VERSION)
 GO_LDFLAGS += -w -s # Drop debugging symbols.
@@ -40,9 +41,26 @@ export GOFLAGS = -mod=vendor
 
 # todo CGO_ENABLE=1 程序使用到了Cgo就打开是1  默认是0关闭
 # todo -o 指定输出文件。
-start: $(GO_FILES)
-	GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -ldflags $(GO_LDFLAGS) -o $@ .
+# todo make GOARCH=amd64 start  $(GOARCH)就会传递参数
+
+cmd/start: $(GO_FILES)
+	@ echo
+#    GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -ldflags '-extldflags "-static" -X yussgo/deploytest/pkg/version.version=v1.0.0 -w -s  ' -o cmd/start yussgo/deploytest/cmd
+	GOARCH=$(GOARCH) GOOS=linux CGO_ENABLED=0 go build -ldflags $(GO_LDFLAGS) -o $@ $(EXECUTOR_PACKAGE)
+
 .PHONY: build
 build:
-	DOCKER_BUILDKIT=1 docker build ${BUILD_ARG} --build-arg=GOARCH=amd64 -t yu:latest -f hack/Dockerfile .
+	DOCKER_BUILDKIT=1 docker build ${BUILD_ARG} --build-arg=TARGETARCH=amd64 -t yu:latest -f hack/Dockerfile .
+
+test:
+	@ echo "1111"
+
+.PHONY: build_sh
+build_sh:
+	hack/build.sh lib
+
+
+
+
+
 #	docker push $(REGISTRY)/executor:latest
