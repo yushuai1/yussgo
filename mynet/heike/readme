@@ -1,0 +1,6 @@
+https://blog.csdn.net/u012889638/article/details/111866141
+
+CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o webhook .
+
+
+https://stackoverflow.com/questions/57699575/undefined-when-building-for-mips
